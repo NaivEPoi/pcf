@@ -71,6 +71,7 @@ type Configuration struct {
 	ServiceList     []Service `yaml:"serviceList,omitempty" valid:"required"`
 	Mongodb         *Mongodb  `yaml:"mongodb" valid:"required"`
 	Locality        string    `yaml:"locality,omitempty" valid:"-"`
+	OAuth           bool      `yaml:"OAuth,omitempty"`
 }
 
 func (c *Configuration) validate() (bool, error) {

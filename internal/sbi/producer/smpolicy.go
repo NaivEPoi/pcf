@@ -1,7 +1,6 @@
 package producer
 
 import (
-	"context"
 	"fmt"
 	"net/http"
 	"strconv"
@@ -81,7 +80,7 @@ func createSMPolicyProcedure(request models.SmPolicyContextData) (
 			Dnn:    optional.NewString(request.Dnn),
 		}
 		var response *http.Response
-		smData, response, err = client.DefaultApi.PolicyDataUesUeIdSmDataGet(context.Background(), ue.Supi, &param)
+		smData, response, err = client.DefaultApi.PolicyDataUesUeIdSmDataGet(openapi.CreateContext(pcf_context.PCF_Self().OAuth, pcf_context.PCF_Self().NfId, pcf_context.PCF_Self().NrfUri, "PCF"), ue.Supi, &param)
 		if err != nil || response == nil || response.StatusCode != http.StatusOK {
 			problemDetail := util.GetProblemDetail("Can't find UE SM Policy Data in UDR", util.USER_UNKNOWN)
 			logger.SMpolicylog.Warnf("Can't find UE[%s] SM Policy Data in UDR", ue.Supi)

@@ -16,6 +16,7 @@ import (
 
 	"github.com/free5gc/openapi"
 	"github.com/free5gc/openapi/models"
+	pcf_context "github.com/free5gc/pcf/internal/context"
 	"github.com/free5gc/pcf/internal/logger"
 	"github.com/free5gc/pcf/internal/sbi/producer"
 	"github.com/free5gc/util/httpwrapper"
@@ -23,6 +24,12 @@ import (
 
 // SmPoliciesPost -
 func HTTPSmPoliciesPost(c *gin.Context) {
+	scopes := []string{"npcf-smpolicycontrol"}
+	_, oauth_err := openapi.CheckOAuth(c.Request.Header.Get("Authorization"), scopes)
+	if oauth_err != nil && pcf_context.PCF_Self().OAuth {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": oauth_err.Error()})
+		return
+	}
 	var smPolicyContextData models.SmPolicyContextData
 	// step 1: retrieve http request body
 	requestBody, err := c.GetRawData()
@@ -75,6 +82,12 @@ func HTTPSmPoliciesPost(c *gin.Context) {
 
 // SmPoliciesSmPolicyIdDeletePost -
 func HTTPSmPoliciesSmPolicyIdDeletePost(c *gin.Context) {
+	scopes := []string{"npcf-smpolicycontrol"}
+	_, oauth_err := openapi.CheckOAuth(c.Request.Header.Get("Authorization"), scopes)
+	if oauth_err != nil && pcf_context.PCF_Self().OAuth {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": oauth_err.Error()})
+		return
+	}
 	req := httpwrapper.NewRequest(c.Request, nil)
 	req.Params["smPolicyId"] = c.Params.ByName("smPolicyId")
 
@@ -96,6 +109,12 @@ func HTTPSmPoliciesSmPolicyIdDeletePost(c *gin.Context) {
 
 // SmPoliciesSmPolicyIdGet -
 func HTTPSmPoliciesSmPolicyIDGet(c *gin.Context) {
+	scopes := []string{"npcf-smpolicycontrol"}
+	_, oauth_err := openapi.CheckOAuth(c.Request.Header.Get("Authorization"), scopes)
+	if oauth_err != nil && pcf_context.PCF_Self().OAuth {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": oauth_err.Error()})
+		return
+	}
 	req := httpwrapper.NewRequest(c.Request, nil)
 	req.Params["smPolicyId"] = c.Params.ByName("smPolicyId")
 
@@ -117,6 +136,12 @@ func HTTPSmPoliciesSmPolicyIDGet(c *gin.Context) {
 
 // SmPoliciesSmPolicyIdUpdatePost -
 func HTTPSmPoliciesSmPolicyIdUpdatePost(c *gin.Context) {
+	scopes := []string{"npcf-smpolicycontrol"}
+	_, oauth_err := openapi.CheckOAuth(c.Request.Header.Get("Authorization"), scopes)
+	if oauth_err != nil && pcf_context.PCF_Self().OAuth {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": oauth_err.Error()})
+		return
+	}
 	var smPolicyUpdateContextData models.SmPolicyUpdateContextData
 	// step 1: retrieve http request body
 	requestBody, err := c.GetRawData()

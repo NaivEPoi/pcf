@@ -1,7 +1,6 @@
 package consumer
 
 import (
-	"context"
 	"fmt"
 	"net/http"
 	"strings"
@@ -54,7 +53,7 @@ func SendRegisterNFInstance(nrfUri, nfInstanceId string, profile models.NfProfil
 
 	var res *http.Response
 	for {
-		_, res, err = client.NFInstanceIDDocumentApi.RegisterNFInstance(context.TODO(), nfInstanceId, profile)
+		_, res, err = client.NFInstanceIDDocumentApi.RegisterNFInstance(openapi.CreateContext(pcf_context.PCF_Self().OAuth, pcf_context.PCF_Self().NfId, pcf_context.PCF_Self().NrfUri, "PCF"), nfInstanceId, profile)
 		if err != nil || res == nil {
 			// TODO : add log
 			fmt.Println(fmt.Errorf("PCF register to NRF Error[%v]", err.Error()))
@@ -94,7 +93,7 @@ func SendDeregisterNFInstance() (problemDetails *models.ProblemDetails, err erro
 
 	var res *http.Response
 
-	res, err = client.NFInstanceIDDocumentApi.DeregisterNFInstance(context.Background(), pcfSelf.NfId)
+	res, err = client.NFInstanceIDDocumentApi.DeregisterNFInstance(openapi.CreateContext(pcf_context.PCF_Self().OAuth, pcf_context.PCF_Self().NfId, pcf_context.PCF_Self().NrfUri, "PCF"), pcfSelf.NfId)
 	if err == nil {
 		return
 	} else if res != nil {

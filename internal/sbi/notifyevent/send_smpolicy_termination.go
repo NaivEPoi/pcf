@@ -1,12 +1,13 @@
 package notifyevent
 
 import (
-	"context"
 	"net/http"
 
 	"github.com/tim-ywliu/event"
 
+	"github.com/free5gc/openapi"
 	"github.com/free5gc/openapi/models"
+	pcf_context "github.com/free5gc/pcf/internal/context"
 	"github.com/free5gc/pcf/internal/logger"
 	"github.com/free5gc/pcf/internal/util"
 )
@@ -27,7 +28,7 @@ func (e SendSMpolicyTerminationNotifyEvent) Handle() {
 	client := util.GetNpcfSMPolicyCallbackClient()
 	logger.NotifyEventLog.Infof("SM Policy Termination Request Notification to SMF")
 	rsp, err :=
-		client.DefaultCallbackApi.SmPolicyControlTerminationRequestNotification(context.Background(), e.uri, *e.request)
+		client.DefaultCallbackApi.SmPolicyControlTerminationRequestNotification(openapi.CreateContext(pcf_context.PCF_Self().OAuth, pcf_context.PCF_Self().NfId, pcf_context.PCF_Self().NrfUri, "PCF"), e.uri, *e.request)
 	if err != nil {
 		if rsp != nil {
 			logger.NotifyEventLog.Warnf("SM Policy Termination Request Notification Error[%s]", rsp.Status)

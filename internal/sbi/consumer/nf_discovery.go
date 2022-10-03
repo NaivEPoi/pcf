@@ -1,14 +1,15 @@
 package consumer
 
 import (
-	"context"
 	"fmt"
 	"net/http"
 
 	"github.com/antihax/optional"
 
+	"github.com/free5gc/openapi"
 	"github.com/free5gc/openapi/Nnrf_NFDiscovery"
 	"github.com/free5gc/openapi/models"
+	pcf_context "github.com/free5gc/pcf/internal/context"
 	"github.com/free5gc/pcf/internal/logger"
 	"github.com/free5gc/pcf/internal/util"
 )
@@ -21,7 +22,7 @@ func SendSearchNFInstances(
 	configuration.SetBasePath(nrfUri)
 	client := Nnrf_NFDiscovery.NewAPIClient(configuration)
 
-	result, res, err := client.NFInstancesStoreApi.SearchNFInstances(context.TODO(), targetNfType, requestNfType, &param)
+	result, res, err := client.NFInstancesStoreApi.SearchNFInstances(openapi.CreateContext(pcf_context.PCF_Self().OAuth, pcf_context.PCF_Self().NfId, pcf_context.PCF_Self().NrfUri, "PCF"), targetNfType, requestNfType, &param)
 	if err != nil {
 		logger.ConsumerLog.Errorf("SearchNFInstances failed: %+v", err)
 	}

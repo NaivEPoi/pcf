@@ -1,7 +1,6 @@
 package producer
 
 import (
-	"context"
 	"fmt"
 	"net/http"
 
@@ -9,6 +8,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/mohae/deepcopy"
 
+	"github.com/free5gc/openapi"
 	"github.com/free5gc/openapi/Nnrf_NFDiscovery"
 	"github.com/free5gc/openapi/Nudr_DataRepository"
 	"github.com/free5gc/openapi/models"
@@ -117,7 +117,7 @@ func updateBDTPolicyContextProcedure(request models.BdtPolicyDataPatch, bdtPolic
 				BdtData: optional.NewInterface(bdtData),
 			}
 			client := util.GetNudrClient(getDefaultUdrUri(pcfSelf))
-			rsp, err := client.DefaultApi.PolicyDataBdtDataBdtReferenceIdPut(context.Background(), bdtData.BdtRefId, &param)
+			rsp, err := client.DefaultApi.PolicyDataBdtDataBdtReferenceIdPut(openapi.CreateContext(pcf_context.PCF_Self().OAuth, pcf_context.PCF_Self().NfId, pcf_context.PCF_Self().NrfUri, "PCF"), bdtData.BdtRefId, &param)
 			if err != nil {
 				logger.Bdtpolicylog.Warnf("UDR Put BdtDate error[%s]", err.Error())
 			}
@@ -187,7 +187,7 @@ func createBDTPolicyContextProcedure(request *models.BdtReqData) (
 
 	// Query BDT DATA array from UDR
 	client := util.GetNudrClient(udrUri)
-	bdtDatas, httpResponse, err := client.DefaultApi.PolicyDataBdtDataGet(context.Background())
+	bdtDatas, httpResponse, err := client.DefaultApi.PolicyDataBdtDataGet(openapi.CreateContext(pcf_context.PCF_Self().OAuth, pcf_context.PCF_Self().NfId, pcf_context.PCF_Self().NrfUri, "PCF"))
 	if err != nil || httpResponse == nil || httpResponse.StatusCode != http.StatusOK {
 		problemDetails = &models.ProblemDetails{
 			Status: http.StatusServiceUnavailable,
@@ -251,7 +251,7 @@ func createBDTPolicyContextProcedure(request *models.BdtReqData) (
 	}
 
 	var updateRsp *http.Response
-	if rsp, rspErr := client.DefaultApi.PolicyDataBdtDataBdtReferenceIdPut(context.Background(),
+	if rsp, rspErr := client.DefaultApi.PolicyDataBdtDataBdtReferenceIdPut(openapi.CreateContext(pcf_context.PCF_Self().OAuth, pcf_context.PCF_Self().NfId, pcf_context.PCF_Self().NrfUri, "PCF"),
 		bdtPolicyData.BdtRefId, &param); rspErr != nil {
 		logger.Bdtpolicylog.Warnf("UDR Put BdtDate error[%s]", rspErr.Error())
 	} else {

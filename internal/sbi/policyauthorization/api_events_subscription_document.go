@@ -16,6 +16,7 @@ import (
 
 	"github.com/free5gc/openapi"
 	"github.com/free5gc/openapi/models"
+	pcf_context "github.com/free5gc/pcf/internal/context"
 	"github.com/free5gc/pcf/internal/logger"
 	"github.com/free5gc/pcf/internal/sbi/producer"
 	"github.com/free5gc/pcf/internal/util"
@@ -24,6 +25,12 @@ import (
 
 // HTTPDeleteEventsSubsc - deletes the Events Subscription subresource
 func HTTPDeleteEventsSubsc(c *gin.Context) {
+	scopes := []string{"npcf-policyauthorization"}
+	_, oauth_err := openapi.CheckOAuth(c.Request.Header.Get("Authorization"), scopes)
+	if oauth_err != nil && pcf_context.PCF_Self().OAuth {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": oauth_err.Error()})
+		return
+	}
 	req := httpwrapper.NewRequest(c.Request, nil)
 	req.Params["appSessionId"], _ = c.Params.Get("appSessionId")
 
@@ -45,6 +52,12 @@ func HTTPDeleteEventsSubsc(c *gin.Context) {
 
 // HTTPUpdateEventsSubsc - creates or modifies an Events Subscription subresource
 func HTTPUpdateEventsSubsc(c *gin.Context) {
+	scopes := []string{"npcf-policyauthorization"}
+	_, oauth_err := openapi.CheckOAuth(c.Request.Header.Get("Authorization"), scopes)
+	if oauth_err != nil && pcf_context.PCF_Self().OAuth {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": oauth_err.Error()})
+		return
+	}
 	var eventsSubscReqData models.EventsSubscReqData
 
 	requestBody, err := c.GetRawData()

@@ -16,6 +16,7 @@ import (
 
 	"github.com/free5gc/openapi"
 	"github.com/free5gc/openapi/models"
+	pcf_context "github.com/free5gc/pcf/internal/context"
 	"github.com/free5gc/pcf/internal/logger"
 	"github.com/free5gc/pcf/internal/sbi/producer"
 	"github.com/free5gc/pcf/internal/util"
@@ -24,6 +25,12 @@ import (
 
 // HTTPPostAppSessions - Creates a new Individual Application Session Context resource
 func HTTPPostAppSessions(c *gin.Context) {
+	scopes := []string{"npcf-policyauthorization"}
+	_, oauth_err := openapi.CheckOAuth(c.Request.Header.Get("Authorization"), scopes)
+	if oauth_err != nil && pcf_context.PCF_Self().OAuth {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": oauth_err.Error()})
+		return
+	}
 	var appSessionContext models.AppSessionContext
 
 	requestBody, err := c.GetRawData()

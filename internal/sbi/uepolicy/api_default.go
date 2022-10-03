@@ -10,21 +10,49 @@
 package uepolicy
 
 import (
+	"net/http"
+
+	"github.com/free5gc/openapi"
+	pcf_context "github.com/free5gc/pcf/internal/context"
 	"github.com/gin-gonic/gin"
 )
 
 // PoliciesPolAssoIdDelete -
 func PoliciesPolAssoIdDelete(c *gin.Context) {
+	scopes := []string{"npcf-ue-policy-control"}
+	_, oauth_err := openapi.CheckOAuth(c.Request.Header.Get("Authorization"), scopes)
+	if oauth_err != nil && pcf_context.PCF_Self().OAuth {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": oauth_err.Error()})
+		return
+	}
 }
 
 // PoliciesPolAssoIdGet -
 func PoliciesPolAssoIdGet(c *gin.Context) {
+	scopes := []string{"npcf-ue-policy-control"}
+	_, oauth_err := openapi.CheckOAuth(c.Request.Header.Get("Authorization"), scopes)
+	if oauth_err != nil && pcf_context.PCF_Self().OAuth {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": oauth_err.Error()})
+		return
+	}
 }
 
 // PoliciesPolAssoIdUpdatePost -
 func PoliciesPolAssoIdUpdatePost(c *gin.Context) {
+	scopes := []string{"npcf-ue-policy-control"}
+	_, oauth_err := openapi.CheckOAuth(c.Request.Header.Get("Authorization"), scopes)
+	if oauth_err != nil && pcf_context.PCF_Self().OAuth {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": oauth_err.Error()})
+		return
+	}
 }
 
 // PoliciesPost -
 func PoliciesPost(c *gin.Context) {
+	scopes := []string{"npcf-ue-policy-control"}
+	_, oauth_err := openapi.CheckOAuth(c.Request.Header.Get("Authorization"), scopes)
+	if oauth_err != nil && pcf_context.PCF_Self().OAuth {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": oauth_err.Error()})
+		return
+	}
 }

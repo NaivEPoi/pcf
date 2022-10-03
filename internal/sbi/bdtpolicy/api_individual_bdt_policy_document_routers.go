@@ -19,6 +19,7 @@ import (
 
 	"github.com/free5gc/openapi"
 	"github.com/free5gc/openapi/models"
+	pcf_context "github.com/free5gc/pcf/internal/context"
 	"github.com/free5gc/pcf/internal/logger"
 	"github.com/free5gc/pcf/internal/sbi/producer"
 	"github.com/free5gc/util/httpwrapper"
@@ -26,6 +27,13 @@ import (
 
 // GetBDTPolicy - Read an Individual BDT policy
 func HTTPGetBDTPolicy(c *gin.Context) {
+	scopes := []string{"npcf-bdtpolicycontrol"}
+	_, oauth_err := openapi.CheckOAuth(c.Request.Header.Get("Authorization"), scopes)
+	if oauth_err != nil && pcf_context.PCF_Self().OAuth {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": oauth_err.Error()})
+		return
+	}
+
 	req := httpwrapper.NewRequest(c.Request, nil)
 	req.Params["bdtPolicyId"] = c.Params.ByName("bdtPolicyId")
 
@@ -47,6 +55,13 @@ func HTTPGetBDTPolicy(c *gin.Context) {
 
 // UpdateBDTPolicy - Update an Individual BDT policy
 func HTTPUpdateBDTPolicy(c *gin.Context) {
+	scopes := []string{"npcf-bdtpolicycontrol"}
+	_, oauth_err := openapi.CheckOAuth(c.Request.Header.Get("Authorization"), scopes)
+	if oauth_err != nil && pcf_context.PCF_Self().OAuth {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": oauth_err.Error()})
+		return
+	}
+
 	var bdtPolicyDataPatch models.BdtPolicyDataPatch
 	// step 1: retrieve http request body
 	requestBody, err := c.GetRawData()

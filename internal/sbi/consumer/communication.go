@@ -1,7 +1,6 @@
 package consumer
 
 import (
-	"context"
 	"fmt"
 	"strings"
 
@@ -24,7 +23,7 @@ func AmfStatusChangeSubscribe(amfUri string, guamiList []models.Guami) (
 	}
 
 	res, httpResp, localErr :=
-		client.SubscriptionsCollectionDocumentApi.AMFStatusChangeSubscribe(context.Background(), subscriptionData)
+		client.SubscriptionsCollectionDocumentApi.AMFStatusChangeSubscribe(openapi.CreateContext(pcf_context.PCF_Self().OAuth, pcf_context.PCF_Self().NfId, pcf_context.PCF_Self().NrfUri, "PCF"), subscriptionData)
 	if localErr == nil {
 		locationHeader := httpResp.Header.Get("Location")
 		logger.Consumerlog.Debugf("location header: %+v", locationHeader)

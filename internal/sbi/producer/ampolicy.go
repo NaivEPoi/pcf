@@ -1,7 +1,6 @@
 package producer
 
 import (
-	"context"
 	"fmt"
 	"net/http"
 	"reflect"
@@ -236,7 +235,7 @@ func PostPoliciesProcedure(polAssoId string,
 	if amPolicy == nil || amPolicy.AmPolicyData == nil {
 		client := util.GetNudrClient(udrUri)
 		var response *http.Response
-		amData, response, err := client.DefaultApi.PolicyDataUesUeIdAmDataGet(context.Background(), ue.Supi)
+		amData, response, err := client.DefaultApi.PolicyDataUesUeIdAmDataGet(openapi.CreateContext(pcf_context.PCF_Self().OAuth, pcf_context.PCF_Self().NfId, pcf_context.PCF_Self().NrfUri, "PCF"), ue.Supi)
 		if err != nil || response == nil || response.StatusCode != http.StatusOK {
 			problemDetail := util.GetProblemDetail("Can't find UE AM Policy Data in UDR", util.USER_UNKNOWN)
 			logger.AMpolicylog.Errorf("Can't find UE[%s] AM Policy Data in UDR", ue.Supi)
@@ -327,7 +326,7 @@ func SendAMPolicyUpdateNotification(ue *pcf_context.UeContext, PolId string, req
 	client := util.GetNpcfAMPolicyCallbackClient()
 	uri := amPolicyData.NotificationUri
 	for uri != "" {
-		rsp, err := client.DefaultCallbackApi.PolicyUpdateNotification(context.Background(), uri, request)
+		rsp, err := client.DefaultCallbackApi.PolicyUpdateNotification(openapi.CreateContext(pcf_context.PCF_Self().OAuth, pcf_context.PCF_Self().NfId, pcf_context.PCF_Self().NrfUri, "PCF"), uri, request)
 		if err != nil {
 			if rsp != nil && rsp.StatusCode != http.StatusNoContent {
 				logger.AMpolicylog.Warnf("Policy Update Notification Error[%s]", rsp.Status)
@@ -377,7 +376,7 @@ func SendAMPolicyTerminationRequestNotification(ue *pcf_context.UeContext,
 	uri := amPolicyData.NotificationUri
 	for uri != "" {
 		rsp, err := client.DefaultCallbackApi.PolicyAssocitionTerminationRequestNotification(
-			context.Background(), uri, request)
+			openapi.CreateContext(pcf_context.PCF_Self().OAuth, pcf_context.PCF_Self().NfId, pcf_context.PCF_Self().NrfUri, "PCF"), uri, request)
 		if err != nil {
 			if rsp != nil && rsp.StatusCode != http.StatusNoContent {
 				logger.AMpolicylog.Warnf("Policy Assocition Termination Request Notification Error[%s]", rsp.Status)

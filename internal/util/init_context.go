@@ -76,4 +76,5 @@ func InitpcfContext(context *context.PCFContext) {
 		}
 	}
 	context.Locality = configuration.Locality
+	context.OAuth = configuration.OAuth
 }

@@ -1,14 +1,14 @@
 package notifyevent
 
 import (
-	"context"
 	"net/http"
 
-	"github.com/tim-ywliu/event"
-
+	"github.com/free5gc/openapi"
 	"github.com/free5gc/openapi/models"
+	pcf_context "github.com/free5gc/pcf/internal/context"
 	"github.com/free5gc/pcf/internal/logger"
 	"github.com/free5gc/pcf/internal/util"
+	"github.com/tim-ywliu/event"
 )
 
 const SendSMpolicyUpdateNotifyEventName event.Name = "SendSMpolicyUpdateNotify"
@@ -27,7 +27,7 @@ func (e SendSMpolicyUpdateNotifyEvent) Handle() {
 	client := util.GetNpcfSMPolicyCallbackClient()
 	logger.NotifyEventLog.Infof("Send SM Policy Update Notification to SMF")
 	_, httpResponse, err :=
-		client.DefaultCallbackApi.SmPolicyUpdateNotification(context.Background(), e.uri, *e.request)
+		client.DefaultCallbackApi.SmPolicyUpdateNotification(openapi.CreateContext(pcf_context.PCF_Self().OAuth, pcf_context.PCF_Self().NfId, pcf_context.PCF_Self().NrfUri, "PCF"), e.uri, *e.request)
 	if err != nil {
 		if httpResponse != nil {
 			logger.NotifyEventLog.Warnf("SM Policy Update Notification Error[%s]", httpResponse.Status)

@@ -1,7 +1,6 @@
 package producer
 
 import (
-	"context"
 	"fmt"
 	"net/http"
 	"strings"
@@ -888,7 +887,7 @@ func SendAppSessionEventNotification(appSession *pcf_context.AppSessionData, req
 			util.GetResourceUri(models.ServiceName_NPCF_POLICYAUTHORIZATION, appSession.AppSessionId))
 		client := util.GetNpcfPolicyAuthorizationCallbackClient()
 		httpResponse, err := client.PolicyAuthorizationEventNotificationApi.PolicyAuthorizationEventNotification(
-			context.Background(), uri, request)
+			openapi.CreateContext(pcf_context.PCF_Self().OAuth, pcf_context.PCF_Self().NfId, pcf_context.PCF_Self().NrfUri, "PCF"), uri, request)
 		if err != nil {
 			if httpResponse != nil {
 				logger.PolicyAuthorizationlog.Warnf("Send App Session Event Notification Error[%s]", httpResponse.Status)
@@ -1063,7 +1062,7 @@ func SendAppSessionTermination(appSession *pcf_context.AppSessionData, request m
 		request.ResUri = util.GetResourceUri(models.ServiceName_NPCF_POLICYAUTHORIZATION, appSession.AppSessionId)
 		client := util.GetNpcfPolicyAuthorizationCallbackClient()
 		httpResponse, err := client.PolicyAuthorizationTerminateRequestApi.PolicyAuthorizationTerminateRequest(
-			context.Background(), uri, request)
+			openapi.CreateContext(pcf_context.PCF_Self().OAuth, pcf_context.PCF_Self().NfId, pcf_context.PCF_Self().NrfUri, "PCF"), uri, request)
 		if err != nil {
 			if httpResponse != nil {
 				logger.PolicyAuthorizationlog.Warnf("Send App Session Termination Error[%s]", httpResponse.Status)
@@ -1106,7 +1105,7 @@ func handleBDTPolicyInd(pcfSelf *pcf_context.PCFContext,
 			requestSuppFeat).String(),
 	}
 	client := util.GetNudrClient(getDefaultUdrUri(pcfSelf))
-	bdtData, resp, err1 := client.DefaultApi.PolicyDataBdtDataBdtReferenceIdGet(context.Background(), req.BdtRefId)
+	bdtData, resp, err1 := client.DefaultApi.PolicyDataBdtDataBdtReferenceIdGet(openapi.CreateContext(pcf_context.PCF_Self().OAuth, pcf_context.PCF_Self().NfId, pcf_context.PCF_Self().NrfUri, "PCF"), req.BdtRefId)
 	if err1 != nil {
 		return fmt.Errorf("UDR Get BdtData error[%s]", err1.Error())
 	} else if resp == nil || resp.StatusCode != http.StatusOK {

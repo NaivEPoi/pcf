@@ -16,6 +16,7 @@ import (
 
 	"github.com/free5gc/openapi"
 	"github.com/free5gc/openapi/models"
+	pcf_context "github.com/free5gc/pcf/internal/context"
 	"github.com/free5gc/pcf/internal/logger"
 	"github.com/free5gc/pcf/internal/sbi/producer"
 	"github.com/free5gc/pcf/internal/util"
@@ -23,6 +24,12 @@ import (
 )
 
 func HTTPPoliciesPolAssoIdDelete(c *gin.Context) {
+	scopes := []string{"npcf-am-policy-control"}
+	_, oauth_err := openapi.CheckOAuth(c.Request.Header.Get("Authorization"), scopes)
+	if oauth_err != nil && pcf_context.PCF_Self().OAuth {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": oauth_err.Error()})
+		return
+	}
 	req := httpwrapper.NewRequest(c.Request, nil)
 	req.Params["polAssoId"], _ = c.Params.Get("polAssoId")
 
@@ -44,6 +51,12 @@ func HTTPPoliciesPolAssoIdDelete(c *gin.Context) {
 
 // HTTPPoliciesPolAssoIdGet -
 func HTTPPoliciesPolAssoIdGet(c *gin.Context) {
+	scopes := []string{"npcf-am-policy-control"}
+	_, oauth_err := openapi.CheckOAuth(c.Request.Header.Get("Authorization"), scopes)
+	if oauth_err != nil && pcf_context.PCF_Self().OAuth {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": oauth_err.Error()})
+		return
+	}
 	req := httpwrapper.NewRequest(c.Request, nil)
 	req.Params["polAssoId"], _ = c.Params.Get("polAssoId")
 
@@ -65,6 +78,12 @@ func HTTPPoliciesPolAssoIdGet(c *gin.Context) {
 
 // HTTPPoliciesPolAssoIdUpdatePost -
 func HTTPPoliciesPolAssoIdUpdatePost(c *gin.Context) {
+	scopes := []string{"npcf-am-policy-control"}
+	_, oauth_err := openapi.CheckOAuth(c.Request.Header.Get("Authorization"), scopes)
+	if oauth_err != nil && pcf_context.PCF_Self().OAuth {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": oauth_err.Error()})
+		return
+	}
 	var policyAssociationUpdateRequest models.PolicyAssociationUpdateRequest
 
 	requestBody, err := c.GetRawData()
@@ -114,6 +133,12 @@ func HTTPPoliciesPolAssoIdUpdatePost(c *gin.Context) {
 
 // HTTPPoliciesPost -
 func HTTPPoliciesPost(c *gin.Context) {
+	scopes := []string{"npcf-am-policy-control"}
+	_, oauth_err := openapi.CheckOAuth(c.Request.Header.Get("Authorization"), scopes)
+	if oauth_err != nil && pcf_context.PCF_Self().OAuth {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": oauth_err.Error()})
+		return
+	}
 	var policyAssociationRequest models.PolicyAssociationRequest
 
 	requestBody, err := c.GetRawData()
